@@ -1,70 +1,66 @@
 from ninja import Router
-from django.shortcuts import get_object_or_404
+from typing import List
 from .models import Expositor, Peca
-from .schemas import ExpositorSchema, PecaSchema
+from .schemas import (
+    ExpositorSchema,
+    CreateExpositorSchema,
+    PecaSchema,
+    CreatePecaSchema
+)
 
-router = Router(tags=["Brecho"])
 
+router = Router(tags=["Brechos"])
 
-# Expositores
-@router.get("/expositores", response=list[ExpositorSchema])
+# --- Expositores ---
+
+@router.get("/expositores", response=List[ExpositorSchema])
 def listar_expositores(request):
     return Expositor.objects.all()
 
-
-@router.post("/expositores", response=ExpositorSchema)
-def criar_expositor(request, data: ExpositorSchema):
-    return Expositor.objects.create(**data.dict())
-
-
 @router.get("/expositores/{expositor_id}", response=ExpositorSchema)
 def obter_expositor(request, expositor_id: str):
-    return get_object_or_404(Expositor, id=expositor_id)
+    return Expositor.objects.get(id=expositor_id)
 
+@router.post("/expositores", response=ExpositorSchema)
+def criar_expositor(request, data: CreateExpositorSchema):
+    return Expositor.objects.create(**data.dict())
 
 @router.put("/expositores/{expositor_id}", response=ExpositorSchema)
-def atualizar_expositor(request, expositor_id: str, data: ExpositorSchema):
-    expositor = get_object_or_404(Expositor, id=expositor_id)
+def atualizar_expositor(request, expositor_id: str, data: CreateExpositorSchema):
+    expositor = Expositor.objects.get(id=expositor_id)
     for attr, value in data.dict().items():
         setattr(expositor, attr, value)
     expositor.save()
     return expositor
 
-
-@router.delete("/expositores/{expositor_id}")
+@router.delete("/expositores/{expositor_id}", response={204: None})
 def deletar_expositor(request, expositor_id: str):
-    expositor = get_object_or_404(Expositor, id=expositor_id)
-    expositor.delete()
+    Expositor.objects.get(id=expositor_id).delete()
     return {"success": True}
 
+# --- Peças ---
 
-# Peças
-@router.get("/pecas", response=list[PecaSchema])
+@router.get("/pecas", response=List[PecaSchema])
 def listar_pecas(request):
     return Peca.objects.all()
 
-
-@router.post("/pecas", response=PecaSchema)
-def criar_peca(request, data: PecaSchema):
-    return Peca.objects.create(**data.dict())
-
-
 @router.get("/pecas/{peca_id}", response=PecaSchema)
 def obter_peca(request, peca_id: str):
-    return get_object_or_404(Peca, id=peca_id)
+    return Peca.objects.get(id=peca_id)
 
+@router.post("/pecas", response=PecaSchema)
+def criar_peca(request, data: CreatePecaSchema):
+    return Peca.objects.create(**data.dict())
 
 @router.put("/pecas/{peca_id}", response=PecaSchema)
-def atualizar_peca(request, peca_id: str, data: PecaSchema):
-    peca = get_object_or_404(Peca, id=peca_id)
+def atualizar_peca(request, peca_id: str, data: CreatePecaSchema):
+    peca = Peca.objects.get(id=peca_id)
     for attr, value in data.dict().items():
         setattr(peca, attr, value)
     peca.save()
     return peca
 
-
-@router.delete("/pecas/{peca_id}")
+@router.delete("/pecas/{peca_id}", response={204: None})
 def deletar_peca(request, peca_id: str):
-    peca = get_object_or_404(Peca, id=peca_id)
-    peca.delete()
+    Peca.objects.get(id=peca_id).delete()
     return {"success": True}

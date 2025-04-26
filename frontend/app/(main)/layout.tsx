@@ -17,7 +17,7 @@ import {
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen"> {/* Linha principal flexível */}
+      <div className="flex w-full min-h-screen"> {/* Linha principal flexível */}
         <AppSidebar />
 
         <div className="flex flex-1 flex-col">
