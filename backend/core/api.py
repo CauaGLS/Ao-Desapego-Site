@@ -10,7 +10,6 @@ class API(NinjaAPI):
 api = API(
     title="Brecho API",
     version="1.0.0",
-    openapi_url="/openapi.json",  # Define o caminho para o arquivo OpenAPI
 )
 
 api.add_router("/", app_router)
